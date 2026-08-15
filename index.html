@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ZEROX AI | QUANT TERMINAL PRO ULTRA</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 
@@ -43,20 +43,27 @@
             <span class="ticker-item">ETH/USDT: <b style="color:var(--call);">$3,490 ▲ (+2.10%)</b></span>
             <span class="ticker-item">USD/JPY: <b style="color:var(--put);">156.40 ▼ (-0.18%)</b></span>
             <span class="ticker-item">EUR/USD: <b style="color:var(--call);">1.0842 ▲ (+0.14%)</b></span>
-            <span class="ticker-item">BTC/USDT: <b style="color:var(--put);">$64,280 ▼ (-1.20%)</b></span>
-            <span class="ticker-item">GOLD (XAU): <b style="color:var(--call);">$2,384.50 ▲ (+0.82%)</b></span>
         </div>
     </div>
 
     <!-- HEADER -->
     <header class="header">
-        <div class="logo">ZEROX QUANT AI <span>PRO ULTRA</span></div>
-        <div class="user-status" id="activeKeyStatus">MODE: FREE DEMO (25M)</div>
+        <div class="logo">ZEROX QUANT AI <span>PRO</span></div>
+        <div class="user-status" id="activeKeyStatus">DEMO: 25M</div>
     </header>
 
+    <!-- TERMINAL MAIN LAYOUT -->
     <div class="terminal-grid">
+        
+        <!-- 1. LIVE TRADINGVIEW CHART (PHONE PAR SABSE UPAR) -->
+        <div class="chart-panel" id="tv_chart_container">
+            <iframe id="tv_frame" src="https://s.tradingview.com/widgetembed/?symbol=FX:EURUSD&interval=1&theme=dark&style=1&timezone=Etc%2FUTC&hideideas=1"></iframe>
+        </div>
+
+        <!-- 2. QUANT CONTROL PANEL & SIGNALS -->
         <div class="panel">
             
+            <!-- QUICK ASSETS -->
             <div class="section-title">QUICK ASSETS</div>
             <div class="chips-bar">
                 <button class="chip-btn active" onclick="selectChip('FX:EURUSD', this)">EUR/USD</button>
@@ -65,14 +72,15 @@
                 <button class="chip-btn" onclick="selectChip('BINANCE:BTCUSDT', this)">BTC</button>
             </div>
 
-            <div class="section-title">CHART TIMEFRAME</div>
+            <!-- TIMEFRAME BUTTONS -->
+            <div class="section-title">TIMEFRAME</div>
             <div class="tf-bar">
                 <button class="tf-btn active" onclick="setTimeframe(1, this)">1M</button>
                 <button class="tf-btn" onclick="setTimeframe(5, this)">5M</button>
                 <button class="tf-btn" onclick="setTimeframe(15, this)">15M</button>
             </div>
 
-            <div class="section-title">ALL LIVE MARKETS</div>
+            <!-- ALL MARKETS DROPDOWN -->
             <select id="assetSelector" onchange="switchMarket()">
                 <optgroup label="FOREX">
                     <option value="FX:EURUSD">EUR / USD</option>
@@ -96,7 +104,7 @@
 
             <!-- CANDLE TIMER -->
             <div class="candle-timer-card">
-                <div class="section-title" style="margin:0; font-size:10px;">CANDLE EXPIRATION COUNTDOWN</div>
+                <div class="section-title" style="margin:0; font-size:10px;">CANDLE EXPIRATION</div>
                 <div class="candle-time-display" id="candleTimerDisplay">--:--</div>
                 <div class="progress-bar-container">
                     <div class="progress-bar-fill" id="candleProgressBar"></div>
@@ -112,7 +120,7 @@
                     <div class="gauge-box">CONFIDENCE: <div class="gauge-val" id="accuracyText">94.6%</div></div>
                     <div class="gauge-box">RSI (14): <div class="gauge-val" id="rsiVal" style="color:var(--call);">64.2</div></div>
                     <div class="gauge-box">TREND: <div class="gauge-val" id="trendText" style="color:var(--call);">STRONG BULLISH</div></div>
-                    <div class="gauge-box">SIGNAL ACC: <div class="gauge-val" style="color:#00ff88;">95.2% (WIN)</div></div>
+                    <div class="gauge-box">BREAKOUT: <div class="gauge-val" id="chkEma" style="color:var(--call);">HIGH BREAK</div></div>
                 </div>
 
                 <div class="vol-wrapper">
@@ -127,29 +135,16 @@
                 </div>
             </div>
 
-            <!-- MULTI-INDICATOR CHECKLIST -->
-            <div class="checklist-card">
-                <div class="section-title" style="font-size:10px; margin-bottom:4px;">QUANT CONFIRMATION MATRIX</div>
-                <div class="check-item"><span>Breakout Matrix:</span> <span class="check-tag" id="chkEma">HIGH BREAK: 74.2%</span></div>
-                <div class="check-item"><span>Order Flow Delta:</span> <span class="check-tag" id="chkOrderFlow">68% BUY / 32% SELL</span></div>
-                <div class="check-item"><span>Liquidity Matrix:</span> <span class="check-tag" id="chkLiq">BUYERS SWEEP</span></div>
-            </div>
-
             <div class="timer-box">
-                <div class="section-title" style="margin:0; font-size:10px;">FREE TRIAL REMAINING</div>
+                <div class="section-title" style="margin:0; font-size:10px;">DEMO TRIAL TIME</div>
                 <div class="timer-val" id="timerDisplay">25:00</div>
             </div>
 
             <a href="https://t.me/zeroxwithai" target="_blank" class="btn-vip">GET VIP KEY ON TELEGRAM</a>
         </div>
-
-        <!-- TRADINGVIEW IFRAME -->
-        <div class="chart-panel" id="tv_chart_container">
-            <iframe id="tv_frame" src="https://s.tradingview.com/widgetembed/?symbol=FX:EURUSD&interval=1&theme=dark&style=1&timezone=Etc%2FUTC&hideideas=1"></iframe>
-        </div>
     </div>
 
-    <!-- MODULAR SCRIPTS -->
+    <!-- SCRIPTS -->
     <script src="chart.js"></script>
     <script src="quant.js"></script>
     <script src="timer.js"></script>

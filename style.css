@@ -1,6 +1,6 @@
 :root { 
     --bg: #06080e; 
-    --card-bg: rgba(13, 20, 34, 0.92); 
+    --card-bg: rgba(13, 20, 34, 0.95); 
     --accent: #00f2fe; 
     --accent-glow: rgba(0, 242, 254, 0.35);
     --call: #00ff88;
@@ -11,7 +11,7 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; }
-body { background: radial-gradient(circle at 50% 0%, #0d1728 0%, var(--bg) 100%); color: #fff; padding: 12px; min-height: 100vh; overflow-x: hidden; }
+body { background: radial-gradient(circle at 50% 0%, #0d1728 0%, var(--bg) 100%); color: #fff; padding: 10px; min-height: 100vh; overflow-x: hidden; }
 
 /* Welcome Screen */
 #welcomeScreen {
@@ -34,60 +34,55 @@ body { background: radial-gradient(circle at 50% 0%, #0d1728 0%, var(--bg) 100%)
 .welcome-status { font-family: 'Orbitron', monospace; font-size: 10px; color: var(--call); letter-spacing: 1px; }
 
 /* Ticker Tape */
-.ticker-wrap { width: 100%; background: rgba(11, 17, 30, 0.9); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; white-space: nowrap; margin-bottom: 10px; padding: 6px 0; font-family: 'Orbitron', monospace; font-size: 10px; }
+.ticker-wrap { width: 100%; background: rgba(11, 17, 30, 0.9); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; white-space: nowrap; margin-bottom: 8px; padding: 5px 0; font-family: 'Orbitron', monospace; font-size: 10px; }
 .ticker-move { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; }
 .ticker-item { display: inline-block; padding: 0 14px; }
 @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
 
 /* Header */
-.header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
-.logo { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 17px; color: var(--accent); display: flex; align-items: center; gap: 6px; }
+.header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+.logo { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 16px; color: var(--accent); display: flex; align-items: center; gap: 6px; }
 .logo span { background: var(--accent); color: #000; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 900; }
 .user-status { font-family: 'Orbitron', sans-serif; font-size: 10px; color: var(--call); font-weight: 700; background: rgba(0, 255, 136, 0.1); border: 1px solid var(--call); padding: 4px 10px; border-radius: 20px; }
 
-/* Responsive Grid Engine */
+/* Responsive Grid */
 .terminal-grid { 
-    display: grid; 
-    grid-template-columns: 380px 1fr; 
-    gap: 14px; 
-}
-
-.panel { 
-    background: var(--card-bg); 
-    padding: 16px; 
-    border-radius: 14px; 
-    border: 1px solid var(--border); 
-    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .chart-panel { 
     background: var(--card-bg); 
-    border-radius: 14px; 
-    height: 680px; 
+    border-radius: 12px; 
+    height: 380px; 
     border: 1px solid var(--border); 
     overflow: hidden; 
+    width: 100%;
 }
 .chart-panel iframe { width: 100%; height: 100%; border: none; }
 
-/* Mobile View: Chart on TOP, Controls BELOW */
-@media (max-width: 950px) { 
+.panel { 
+    background: var(--card-bg); 
+    padding: 14px; 
+    border-radius: 12px; 
+    border: 1px solid var(--border); 
+    width: 100%;
+}
+
+/* Desktop Dual Screen */
+@media (min-width: 950px) { 
     .terminal-grid { 
-        display: flex; 
-        flex-direction: column; 
+        display: grid;
+        grid-template-columns: 1fr 380px;
     }
-    .chart-panel { 
-        order: 1; /* Chart goes TOP on mobile */
-        height: 380px; /* Perfect height for mobile screens */
-        margin-bottom: 12px;
-    }
-    .panel { 
-        order: 2; /* Control panel comes below */
-        padding: 14px;
+    .chart-panel {
+        height: 720px;
     }
 }
 
-/* UI Controls */
-.section-title { font-size: 10px; color: #94a3b8; letter-spacing: 1px; margin-bottom: 6px; font-weight: 700; }
+/* Controls */
+.section-title { font-size: 10px; color: #94a3b8; letter-spacing: 1px; margin-bottom: 5px; font-weight: 700; }
 
 .chips-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
 .chip-btn { padding: 8px 4px; background: #0b111e; border: 1px solid var(--border); color: #94a3b8; border-radius: 6px; font-size: 10px; font-weight: 800; cursor: pointer; text-align: center; font-family: 'Orbitron', sans-serif; }
@@ -99,7 +94,7 @@ body { background: radial-gradient(circle at 50% 0%, #0d1728 0%, var(--bg) 100%)
 
 select { 
     width: 100%; 
-    padding: 11px 12px; 
+    padding: 10px 12px; 
     background: #0b111e; 
     color: #ffffff; 
     border: 1px solid #334155; 
@@ -111,24 +106,24 @@ select {
 }
 
 /* Candle Timer */
-.candle-timer-card { background: #0b111e; border: 1px solid var(--border); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: center; }
-.candle-time-display { font-family: 'Orbitron', monospace; font-size: 26px; font-weight: 900; color: #00f2fe; margin: 2px 0; }
+.candle-timer-card { background: #0b111e; border: 1px solid var(--border); border-radius: 10px; padding: 8px; margin-bottom: 10px; text-align: center; }
+.candle-time-display { font-family: 'Orbitron', monospace; font-size: 24px; font-weight: 900; color: #00f2fe; margin: 2px 0; }
 .candle-time-display.closing { color: var(--put); text-shadow: 0 0 15px var(--put-glow); }
-.progress-bar-container { width: 100%; height: 4px; background: #1e293b; border-radius: 4px; overflow: hidden; margin-top: 4px; }
+.progress-bar-container { width: 100%; height: 4px; background: #1e293b; border-radius: 4px; overflow: hidden; }
 .progress-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #00f2fe, #00ff88); }
 
 /* Quant Signal Box */
-.signal-card { background: #080d16; border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: center; margin-bottom: 10px; transition: 0.3s ease; }
-.signal-card.pulse-call { border-color: var(--call); box-shadow: 0 0 18px var(--call-glow); }
-.signal-card.pulse-put { border-color: var(--put); box-shadow: 0 0 18px var(--put-glow); }
+.signal-card { background: #080d16; border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 10px; }
+.signal-card.pulse-call { border-color: var(--call); box-shadow: 0 0 16px var(--call-glow); }
+.signal-card.pulse-put { border-color: var(--put); box-shadow: 0 0 16px var(--put-glow); }
 
-.signal-val { font-family: 'Orbitron', sans-serif; font-size: 26px; font-weight: 900; margin: 6px 0; letter-spacing: 1px; }
+.signal-val { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 900; margin: 4px 0; letter-spacing: 1px; }
 .signal-val.call { color: var(--call); text-shadow: 0 0 15px var(--call-glow); }
 .signal-val.put { color: var(--put); text-shadow: 0 0 15px var(--put-glow); }
 
 .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px 0; }
 .gauge-box { background: #0b111e; border: 1px solid var(--border); padding: 6px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; text-align: left; }
-.gauge-val { font-family: 'Orbitron', monospace; font-size: 12px; margin-top: 2px; color: var(--accent); }
+.gauge-val { font-family: 'Orbitron', monospace; font-size: 11px; margin-top: 2px; color: var(--accent); }
 
 .vol-wrapper { margin: 8px 0; font-size: 10px; font-weight: 700; }
 .vol-labels { display: flex; justify-content: space-between; margin-bottom: 3px; }
@@ -136,19 +131,14 @@ select {
 .vol-buy { background: var(--call); width: 64%; }
 .vol-sell { background: var(--put); width: 36%; }
 
-.checklist-card { background: #0b111e; border: 1px solid var(--border); border-radius: 10px; padding: 10px; margin-bottom: 10px; font-size: 11px; }
-.check-item { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
-.check-item:last-child { border: none; }
-.check-tag { color: var(--call); font-weight: 800; font-family: 'Orbitron', sans-serif; font-size: 10px; }
-
 .timer-box { background: #0b111e; border: 1px solid var(--border); border-radius: 8px; padding: 8px; text-align: center; margin-bottom: 10px; }
-.timer-val { font-family: 'Orbitron', monospace; font-size: 16px; font-weight: 800; color: #ff3366; }
+.timer-val { font-family: 'Orbitron', monospace; font-size: 15px; font-weight: 800; color: #ff3366; }
 
-.btn-vip { display: block; width: 100%; padding: 12px; background: linear-gradient(135deg, #00f2fe, #4facfe); border: none; border-radius: 8px; color: #05070c; font-weight: 800; font-size: 12px; letter-spacing: 1px; text-align: center; text-decoration: none; box-shadow: 0 0 15px var(--accent-glow); }
+.btn-vip { display: block; width: 100%; padding: 12px; background: linear-gradient(135deg, #00f2fe, #4facfe); border: none; border-radius: 8px; color: #05070c; font-weight: 800; font-size: 12px; letter-spacing: 1px; text-align: center; text-decoration: none; }
 
 /* VIP Modal */
 #vipLockOverlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(4, 6, 10, 0.96); backdrop-filter: blur(20px); z-index: 99999; display: none; justify-content: center; align-items: center; padding: 16px; }
-.lock-box { background: var(--card-bg); padding: 28px 22px; border-radius: 16px; border: 1px solid rgba(255, 51, 102, 0.4); box-shadow: 0 0 40px rgba(255, 51, 102, 0.3); text-align: center; width: 100%; max-width: 380px; }
+.lock-box { background: var(--card-bg); padding: 26px 20px; border-radius: 16px; border: 1px solid rgba(255, 51, 102, 0.4); box-shadow: 0 0 40px rgba(255, 51, 102, 0.3); text-align: center; width: 100%; max-width: 380px; }
 .lock-box h2 { font-family: 'Orbitron', sans-serif; font-size: 18px; color: var(--put); letter-spacing: 2px; margin-bottom: 6px; }
 .lock-box p { font-size: 13px; color: #94a3b8; margin-bottom: 16px; font-weight: 500; }
 .key-input { width: 100%; padding: 12px; background: #0b101c; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 15px; text-align: center; font-family: 'Orbitron', monospace; letter-spacing: 2px; outline: none; margin-bottom: 12px; }
