@@ -1,8 +1,7 @@
 let lastCandleSlot = 0;
 
-// --- 25-MIN DEMO & 30-DAY VIP EXPIRY ENGINE ---
-const DEMO_DURATION_MS = 25 * 60 * 1000;          // 25 Min Free Demo
-const VIP_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 30 Days VIP Period
+const DEMO_DURATION_MS = 25 * 60 * 1000;
+const VIP_DURATION_MS = 30 * 24 * 60 * 60 * 1000;
 
 function checkTerminalAccessStatus() {
     const now = Date.now();
@@ -12,13 +11,11 @@ function checkTerminalAccessStatus() {
     const timerElem = document.getElementById('timerDisplay');
     const activeStatus = document.getElementById('activeKeyStatus');
 
-    // 1. VIP User Check (30 Days Validity)
     if (isVip && vipActivationTime) {
         const vipElapsed = now - parseInt(vipActivationTime, 10);
         const vipRemaining = VIP_DURATION_MS - vipElapsed;
 
         if (vipRemaining <= 0) {
-            // 30 Days Finished -> Auto Lock Again
             localStorage.removeItem('zerox_is_vip');
             localStorage.removeItem('zerox_vip_start_time');
             if (lockOverlay) lockOverlay.style.display = 'flex';
@@ -29,10 +26,8 @@ function checkTerminalAccessStatus() {
             if (timerElem) timerElem.textContent = 'EXPIRED';
             return true;
         } else {
-            // VIP Active -> Display Remaining Days/Hours
             const daysLeft = Math.floor(vipRemaining / (24 * 60 * 60 * 1000));
             const hoursLeft = Math.floor((vipRemaining % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
-            
             if (activeStatus) {
                 activeStatus.textContent = 'VIP ACTIVE (' + daysLeft + 'D ' + hoursLeft + 'H)';
                 activeStatus.style.color = '#00ff88';
@@ -46,7 +41,6 @@ function checkTerminalAccessStatus() {
         }
     }
 
-    // 2. Free Demo User Check (25 Minutes)
     let firstVisitTime = localStorage.getItem('zerox_first_visit_timestamp');
     if (!firstVisitTime) {
         localStorage.setItem('zerox_first_visit_timestamp', now.toString());
@@ -75,7 +69,6 @@ function checkTerminalAccessStatus() {
 
 setInterval(checkTerminalAccessStatus, 1000);
 
-// --- CANDLE TIMER LOOP ---
 function runCandleEngine() {
     const now = Date.now();
     const intervalMs = currentInterval * 60 * 1000;
@@ -107,7 +100,6 @@ function runCandleEngine() {
     requestAnimationFrame(runCandleEngine);
 }
 
-// --- BOOT LOADER ANIMATION ---
 (function runWelcomeSequence() {
     const isExpired = checkTerminalAccessStatus();
     const welcomeScreen = document.getElementById('welcomeScreen');
