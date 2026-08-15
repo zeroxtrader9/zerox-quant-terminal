@@ -1,26 +1,53 @@
 let lastCandleSlot = 0;
 
-// --- PERMANENT 25-MIN DEMO TRACKER ---
-const DEMO_DURATION_MS = 25 * 60 * 1000;
+// --- 25-MIN DEMO & 30-DAY VIP EXPIRY ENGINE ---
+const DEMO_DURATION_MS = 25 * 60 * 1000;          // 25 Min Free Demo
+const VIP_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 30 Days VIP Period
 
-function checkDemoExpiryStatus() {
-    if (localStorage.getItem('zerox_is_vip') === 'true') {
-        const activeStatus = document.getElementById('activeKeyStatus');
-        const timerElem = document.getElementById('timerDisplay');
-        if (activeStatus) {
-            activeStatus.textContent = 'STATUS: VIP LIFETIME';
-            activeStatus.style.color = '#00ff88';
+function checkTerminalAccessStatus() {
+    const now = Date.now();
+    const isVip = localStorage.getItem('zerox_is_vip') === 'true';
+    const vipActivationTime = localStorage.getItem('zerox_vip_start_time');
+    const lockOverlay = document.getElementById('vipLockOverlay');
+    const timerElem = document.getElementById('timerDisplay');
+    const activeStatus = document.getElementById('activeKeyStatus');
+
+    // 1. VIP User Check (30 Days Validity)
+    if (isVip && vipActivationTime) {
+        const vipElapsed = now - parseInt(vipActivationTime, 10);
+        const vipRemaining = VIP_DURATION_MS - vipElapsed;
+
+        if (vipRemaining <= 0) {
+            // 30 Days Finished -> Auto Lock Again
+            localStorage.removeItem('zerox_is_vip');
+            localStorage.removeItem('zerox_vip_start_time');
+            if (lockOverlay) lockOverlay.style.display = 'flex';
+            if (activeStatus) {
+                activeStatus.textContent = 'VIP EXPIRED';
+                activeStatus.style.color = '#ff3366';
+            }
+            if (timerElem) timerElem.textContent = 'EXPIRED';
+            return true;
+        } else {
+            // VIP Active -> Display Remaining Days/Hours
+            const daysLeft = Math.floor(vipRemaining / (24 * 60 * 60 * 1000));
+            const hoursLeft = Math.floor((vipRemaining % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+            
+            if (activeStatus) {
+                activeStatus.textContent = 'VIP ACTIVE (' + daysLeft + 'D ' + hoursLeft + 'H)';
+                activeStatus.style.color = '#00ff88';
+            }
+            if (timerElem) {
+                timerElem.textContent = daysLeft + 'D ' + hoursLeft + 'H LEFT';
+                timerElem.style.color = '#00ff88';
+            }
+            if (lockOverlay) lockOverlay.style.display = 'none';
+            return false;
         }
-        if (timerElem) {
-            timerElem.textContent = 'UNLIMITED';
-            timerElem.style.color = '#00ff88';
-        }
-        return false;
     }
 
+    // 2. Free Demo User Check (25 Minutes)
     let firstVisitTime = localStorage.getItem('zerox_first_visit_timestamp');
-    const now = Date.now();
-
     if (!firstVisitTime) {
         localStorage.setItem('zerox_first_visit_timestamp', now.toString());
         firstVisitTime = now;
@@ -32,12 +59,7 @@ function checkDemoExpiryStatus() {
     const remainingMs = DEMO_DURATION_MS - elapsedMs;
 
     if (remainingMs <= 0) {
-        const lockOverlay = document.getElementById('vipLockOverlay');
-        const timerElem = document.getElementById('timerDisplay');
-        const welcomeScreen = document.getElementById('welcomeScreen');
-
         if (timerElem) timerElem.textContent = '00:00';
-        if (welcomeScreen) welcomeScreen.style.display = 'none';
         if (lockOverlay) lockOverlay.style.display = 'flex';
         return true;
     }
@@ -45,21 +67,18 @@ function checkDemoExpiryStatus() {
     const totalSecsLeft = Math.floor(remainingMs / 1000);
     const m = Math.floor(totalSecsLeft / 60);
     const s = totalSecsLeft % 60;
-    const timerElem = document.getElementById('timerDisplay');
     if (timerElem) {
         timerElem.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
     }
     return false;
 }
 
-setInterval(checkDemoExpiryStatus, 1000);
+setInterval(checkTerminalAccessStatus, 1000);
 
-// --- CANDLE SYNC ENGINE (1M, 5M, 15M) ---
+// --- CANDLE TIMER LOOP ---
 function runCandleEngine() {
     const now = Date.now();
     const intervalMs = currentInterval * 60 * 1000;
-    
-    // Remaining time in current selected candle (1M, 5M, or 15M)
     const msRemaining = intervalMs - (now % intervalMs);
     const totalSecsLeft = Math.ceil(msRemaining / 1000);
 
@@ -72,7 +91,6 @@ function runCandleEngine() {
     if (candleDisplay && progressBar) {
         candleDisplay.textContent = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
         progressBar.style.width = ((msRemaining / intervalMs) * 100) + '%';
-
         if (totalSecsLeft <= 5) {
             candleDisplay.classList.add('closing');
         } else {
@@ -80,31 +98,26 @@ function runCandleEngine() {
         }
     }
 
-    // Exact Candle Expiry Trigger (Only triggers when the current candle period finishes)
     const currentSlot = Math.floor(now / intervalMs);
     if (lastCandleSlot !== 0 && lastCandleSlot !== currentSlot) {
-        if (typeof generateQuantSignal === 'function') {
-            generateQuantSignal();
-        }
+        if (typeof generateQuantSignal === 'function') generateQuantSignal();
     }
     lastCandleSlot = currentSlot;
 
     requestAnimationFrame(runCandleEngine);
 }
 
-// --- WELCOME BOOT ANIMATION ---
+// --- BOOT LOADER ANIMATION ---
 (function runWelcomeSequence() {
-    const isExpired = checkDemoExpiryStatus();
+    const isExpired = checkTerminalAccessStatus();
     const welcomeScreen = document.getElementById('welcomeScreen');
-    
-    if (isExpired) {
-        if (welcomeScreen) welcomeScreen.style.display = 'none';
+    if (isExpired && welcomeScreen) {
+        welcomeScreen.style.display = 'none';
         return;
     }
 
     const progressBar = document.getElementById('welcomeProgress');
     const statusText = document.getElementById('welcomeStatusText');
-
     if (!welcomeScreen) return;
 
     let progress = 0;
@@ -118,11 +131,8 @@ function runCandleEngine() {
     const interval = setInterval(() => {
         progress += 2;
         if (progressBar) progressBar.style.width = progress + '%';
-
         const stage = stages.find(s => s.at === progress);
-        if (stage && statusText) {
-            statusText.textContent = stage.text;
-        }
+        if (stage && statusText) statusText.textContent = stage.text;
 
         if (progress >= 100) {
             clearInterval(interval);
