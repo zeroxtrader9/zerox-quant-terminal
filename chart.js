@@ -1,27 +1,34 @@
+let currentSymbol = 'BINANCE:BTCUSDT';
 let currentInterval = 1;
 
-function setTimeframe(tf, btn) {
-    currentInterval = parseInt(tf);
-    document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    switchMarket();
-}
-
-function selectChip(symbol, btn) {
-    document.getElementById('assetSelector').value = symbol;
-    document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    switchMarket();
+function updateChart() {
+    const frame = document.getElementById('tv_frame');
+    frame.src = `https://s.tradingview.com/widgetembed/?symbol=${encodeURIComponent(currentSymbol)}&interval=${currentInterval}&theme=dark&style=1&timezone=Etc%2FUTC&hideideas=1`;
+    
+    // Switch live WebSocket calculation
+    if (typeof initLiveMarketSocket === 'function') {
+        initLiveMarketSocket(currentSymbol, currentInterval + 'm');
+    }
 }
 
 function switchMarket() {
-    const symbol = document.getElementById('assetSelector').value;
-    const frame = document.getElementById('tv_frame');
-    if (frame) {
-        frame.src = 'https://s.tradingview.com/widgetembed/?symbol=' + encodeURIComponent(symbol) + '&interval=' + currentInterval + '&theme=dark&style=1&timezone=Etc%2FUTC&hideideas=1';
-    }
+    const selector = document.getElementById('assetSelector');
+    currentSymbol = selector.value;
+    updateChart();
+}
 
-    if (typeof connectLiveMarketAPI === 'function') {
-        connectLiveMarketAPI(symbol);
-    }
+function selectChip(sym, elem) {
+    document.querySelectorAll('.chip-btn').forEach(btn => btn.classList.remove('active'));
+    elem.classList.add('active');
+    currentSymbol = sym;
+    const selector = document.getElementById('assetSelector');
+    if (selector) selector.value = sym;
+    updateChart();
+}
+
+function setTimeframe(tf, elem) {
+    document.querySelectorAll('.tf-btn').forEach(btn => btn.classList.remove('active'));
+    elem.classList.add('active');
+    currentInterval = tf;
+    updateChart();
 }
