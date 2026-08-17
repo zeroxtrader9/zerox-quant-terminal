@@ -3,59 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZEROX QUANT AI | TERMINAL</title>
+    <title>ZEROX QUANT AI | PRO TERMINAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- VIP 30-DAY LOCK POPUP -->
+    <!-- VIP LOCK OVERLAY (DEMO EXPIRED / VIP ACCESS) -->
     <div id="vipLockOverlay">
         <div class="lock-box">
-            <h2>VIP ACCESS REQUIRED</h2>
-            <p>Enter your 30-Day VIP Key to continue</p>
+            <h2>FREE TRIAL EXPIRED</h2>
+            <p>Your 25-minute free demo has ended. Enter VIP Key to unlock 30-day access.</p>
             <input type="text" id="licenseKeyInput" placeholder="ENTER VIP KEY">
-            <button onclick="attemptLogin()">UNLOCK TERMINAL</button>
-            <div id="loginErrorMsg" class="error-msg">INVALID KEY</div>
+            <button onclick="attemptLogin()" class="btn-unlock">ACTIVATE 30-DAY VIP</button>
+            <a href="https://t.me/zeroxwithai" target="_blank" class="btn-tg">GET VIP KEY ON TELEGRAM</a>
+            <div id="loginErrorMsg" class="error-msg">INVALID VIP KEY!</div>
         </div>
     </div>
 
-    <!-- MAIN TERMINAL UI -->
+    <!-- TOP HEADER -->
+    <div class="header">
+        <div class="logo">ZEROX <span>QUANT PRO</span></div>
+        <div class="header-right">
+            <div id="accessStatus" class="status-badge">FREE DEMO: <span id="trialTimer">25:00</span></div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
     <div class="terminal-grid">
+        
+        <!-- LEFT PANEL -->
         <div class="panel">
-            <div class="header-box">
-                <div class="title">ZEROX QUANT ENGINE</div>
-                <div id="vipStatus" class="status-badge">VIP CHECKING...</div>
+            
+            <div class="section-title">QUICK ASSETS</div>
+            <div class="chips-bar">
+                <button class="chip-btn active" onclick="switchAsset('BINANCE:BTCUSDT', this)">BTC</button>
+                <button class="chip-btn" onclick="switchAsset('BINANCE:ETHUSDT', this)">ETH</button>
+                <button class="chip-btn" onclick="switchAsset('FX:EURUSD', this)">EUR/USD</button>
+                <button class="chip-btn" onclick="switchAsset('FX:GBPUSD', this)">GBP/USD</button>
             </div>
 
-            <!-- PROBABILITY HUD CARD -->
-            <div class="signal-card" id="signalCardBox">
-                <div class="prob-display">
-                    <div class="prob-box">
-                        <span class="prob-label call-text">CALL (BUY)</span>
-                        <span class="prob-val call-text" id="callProb">00.00%</span>
-                    </div>
-                    <div class="prob-box">
-                        <span class="prob-label put-text">PUT (SELL)</span>
-                        <span class="prob-val put-text" id="putProb">00.00%</span>
-                    </div>
+            <div class="section-title">TIMEFRAME</div>
+            <div class="tf-bar">
+                <button class="tf-btn active" onclick="setTF(1, this)">1M</button>
+                <button class="tf-btn" onclick="setTF(5, this)">5M</button>
+                <button class="tf-btn" onclick="setTF(15, this)">15M</button>
+            </div>
+
+            <!-- CANDLE EXPIRY TIMER -->
+            <div class="timer-card">
+                <div class="sub-label">CANDLE EXPIRATION</div>
+                <div id="candleTimer" class="timer-val">00:45</div>
+            </div>
+
+            <!-- MAIN SIGNAL CARD -->
+            <div class="signal-card pulse-call" id="signalCardBox">
+                <div class="sub-label">QUANT VERDICT</div>
+                <div id="mainSignalText" class="signal-val call">CALL (BUY)</div>
+                <div id="accuracyText" class="accuracy-val">77.07% CONFIDENCE</div>
+
+                <div class="prob-row">
+                    <div>HIGH BREAK: <span id="callProb" style="color:var(--call);">77.07%</span></div>
+                    <div>LOW BREAK: <span id="putProb" style="color:var(--put);">32.73%</span></div>
                 </div>
 
                 <div class="progress-bar-container">
-                    <div class="progress-bar-fill" id="probBar"></div>
+                    <div class="progress-bar-fill" id="probBar" style="width: 77%;"></div>
                 </div>
-
-                <div class="bias-text" id="biasStatus">BIAS: ANALYZING...</div>
             </div>
 
-            <div class="info-note">Live Zeiierman Breakout Logic Active</div>
+            <a href="https://t.me/zeroxwithai" target="_blank" class="btn-vip-support">⚡ UPGRADE TO LIFETIME VIP</a>
+            <div class="footer-note">● Zeiierman Probability Engine Active</div>
         </div>
 
-        <!-- TRADINGVIEW LIVE CHART -->
+        <!-- RIGHT CHART -->
         <div class="chart-panel">
-            <iframe id="tv_frame" src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=1&theme=dark&style=1&timezone=Etc%2FUTC"></iframe>
+            <iframe id="tv_frame" src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=1&theme=dark&style=1&timezone=Asia%2FKolkata"></iframe>
         </div>
+
     </div>
 
-    <script src="quant.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
