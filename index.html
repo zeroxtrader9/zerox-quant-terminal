@@ -9,11 +9,11 @@
 </head>
 <body>
 
-    <!-- VIP LOCK OVERLAY (DEMO EXPIRED / VIP ACCESS) -->
+    <!-- VIP LOCK OVERLAY -->
     <div id="vipLockOverlay">
         <div class="lock-box">
             <h2>FREE TRIAL EXPIRED</h2>
-            <p>Your 25-minute free demo has ended. Enter VIP Key to unlock 30-day access.</p>
+            <p>Your 25-minute demo has ended. Enter VIP Key to unlock 30-day access.</p>
             <input type="text" id="licenseKeyInput" placeholder="ENTER VIP KEY">
             <button onclick="attemptLogin()" class="btn-unlock">ACTIVATE 30-DAY VIP</button>
             <a href="https://t.me/zeroxwithai" target="_blank" class="btn-tg">GET VIP KEY ON TELEGRAM</a>
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <!-- TOP HEADER -->
+    <!-- HEADER -->
     <div class="header">
         <div class="logo">ZEROX <span>QUANT PRO</span></div>
         <div class="header-right">
@@ -29,18 +29,46 @@
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD -->
+    <!-- MAIN TERMINAL -->
     <div class="terminal-grid">
         
-        <!-- LEFT PANEL -->
+        <!-- LEFT CONTROLS -->
         <div class="panel">
             
+            <div class="section-title">ALL CURRENCY PAIRS & ASSETS</div>
+            <select id="assetSelector" onchange="switchMarketDropdown()">
+                <optgroup label="🔥 CRYPTO">
+                    <option value="BINANCE:BTCUSDT" selected>BITCOIN (BTC/USDT)</option>
+                    <option value="BINANCE:ETHUSDT">ETHEREUM (ETH/USDT)</option>
+                    <option value="BINANCE:SOLUSDT">SOLANA (SOL/USDT)</option>
+                    <option value="BINANCE:BNBUSDT">BINANCE COIN (BNB/USDT)</option>
+                    <option value="BINANCE:XRPUSDT">RIPPLE (XRP/USDT)</option>
+                    <option value="BINANCE:DOGEUSDT">DOGECOIN (DOGE/USDT)</option>
+                </optgroup>
+                <optgroup label="💱 FOREX MAJOR">
+                    <option value="FX:EURUSD">EUR / USD (Euro)</option>
+                    <option value="FX:GBPUSD">GBP / USD (British Pound)</option>
+                    <option value="FX:USDJPY">USD / JPY (Japanese Yen)</option>
+                    <option value="FX:AUDUSD">AUD / USD (Aussie Dollar)</option>
+                    <option value="FX:USDCAD">USD / CAD (Canadian Dollar)</option>
+                    <option value="FX:USDCHF">USD / CHF (Swiss Franc)</option>
+                    <option value="FX:EURGBP">EUR / GBP</option>
+                    <option value="FX:EURJPY">EUR / JPY</option>
+                    <option value="FX:GBPJPY">GBP / JPY</option>
+                </optgroup>
+                <optgroup label="🥇 COMMODITIES">
+                    <option value="OANDA:XAUUSD">GOLD (XAU/USD)</option>
+                    <option value="OANDA:XAGUSD">SILVER (XAG/USD)</option>
+                    <option value="TVC:USOIL">CRUDE OIL (US OIL)</option>
+                </optgroup>
+            </select>
+
             <div class="section-title">QUICK ASSETS</div>
             <div class="chips-bar">
-                <button class="chip-btn active" onclick="switchAsset('BINANCE:BTCUSDT', this)">BTC</button>
-                <button class="chip-btn" onclick="switchAsset('BINANCE:ETHUSDT', this)">ETH</button>
-                <button class="chip-btn" onclick="switchAsset('FX:EURUSD', this)">EUR/USD</button>
-                <button class="chip-btn" onclick="switchAsset('FX:GBPUSD', this)">GBP/USD</button>
+                <button class="chip-btn active" onclick="selectChip('BINANCE:BTCUSDT', this)">BTC</button>
+                <button class="chip-btn" onclick="selectChip('FX:EURUSD', this)">EUR/USD</button>
+                <button class="chip-btn" onclick="selectChip('FX:GBPUSD', this)">GBP/USD</button>
+                <button class="chip-btn" onclick="selectChip('OANDA:XAUUSD', this)">GOLD</button>
             </div>
 
             <div class="section-title">TIMEFRAME</div>
@@ -56,9 +84,9 @@
                 <div id="candleTimer" class="timer-val">00:45</div>
             </div>
 
-            <!-- MAIN SIGNAL CARD -->
+            <!-- ZEIIERMAN BREAKOUT SIGNAL -->
             <div class="signal-card pulse-call" id="signalCardBox">
-                <div class="sub-label">QUANT VERDICT</div>
+                <div class="sub-label">ZEIIERMAN PROBABILITY VERDICT</div>
                 <div id="mainSignalText" class="signal-val call">CALL (BUY)</div>
                 <div id="accuracyText" class="accuracy-val">77.07% CONFIDENCE</div>
 
@@ -73,7 +101,7 @@
             </div>
 
             <a href="https://t.me/zeroxwithai" target="_blank" class="btn-vip-support">⚡ UPGRADE TO LIFETIME VIP</a>
-            <div class="footer-note">● Zeiierman Probability Engine Active</div>
+            <div class="footer-note">● Exact Zeiierman Breakout Matrix Active</div>
         </div>
 
         <!-- RIGHT CHART -->
