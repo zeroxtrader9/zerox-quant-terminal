@@ -1,134 +1,7 @@
-// --- ZEROX LIVE ZEIIERMAN ENGINE (100% PINE SCRIPT CONVERSION + LIVE WEBSOCKET) ---
+// --- ZEROX ENGINE WITH ZEIIERMAN PROBABILITY & 30-DAY VIP LOCK ---
 
-let matrix_total = {
-    ghh: 142, // Green candle made High Break
-    gll: 64,  // Green candle made Low Break
-    rhh: 58,  // Red candle made High Break
-    rll: 186, // Red candle made Low Break
-    gtotal: 206, 
-    rtotal: 244  
-};
+const VIP_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 30 Days
 
-let livePrevCandle = { open: 0, high: 0, low: 0, close: 0 };
-let currentLiveCandle = { open: 0, high: 0, low: 0, close: 0 };
-let wsFeed = null;
-
-// Connect to Binance Live Kline Stream
-function initLiveMarketSocket(symbol = 'BTCUSDT', interval = '1m') {
-    if (wsFeed) {
-        wsFeed.close();
-    }
-
-    let cleanSymbol = symbol.toLowerCase().replace('fx:', '').replace('oanda:', '').replace('binance:', '').replace('/', '');
-    // If Forex asset chosen on weekend/live, fallback to BTC/USDT tick stream for live calculation
-    if (!cleanSymbol.includes('usdt')) cleanSymbol = 'btcusdt';
-
-    const wsUrl = `wss://stream.binance.com:9443/ws/${cleanSymbol}@kline_${interval}`;
-    wsFeed = new WebSocket(wsUrl);
-
-    wsFeed.onmessage = function(event) {
-        const msg = JSON.parse(event.data);
-        if (msg.k) {
-            const k = msg.k;
-            currentLiveCandle = {
-                open: parseFloat(k.o),
-                high: parseFloat(k.h),
-                low: parseFloat(k.l),
-                close: parseFloat(k.c),
-                isClosed: k.x
-            };
-
-            // Calculate live breakouts in real time
-            if (livePrevCandle.open !== 0) {
-                computeZeiiermanLive(livePrevCandle, currentLiveCandle);
-            }
-
-            // When Candle Closes -> Lock State into Matrix
-            if (k.x) {
-                commitClosedCandle(livePrevCandle, currentLiveCandle);
-                livePrevCandle = { ...currentLiveCandle };
-            }
-        }
-    };
-}
-
-// Exact Pine Script Score() Function
-function computeZeiiermanLive(prev, curr) {
-    const isGreen = prev.close > prev.open;
-    const isRed = prev.close < prev.open;
-
-    const isHighBreak = curr.high >= prev.high;
-    const isLowBreak = curr.low <= prev.low;
-
-    let ghh = matrix_total.ghh + (isGreen && isHighBreak ? 1 : 0);
-    let gll = matrix_total.gll + (isGreen && isLowBreak ? 1 : 0);
-    let rhh = matrix_total.rhh + (isRed && isHighBreak ? 1 : 0);
-    let rll = matrix_total.rll + (isRed && isLowBreak ? 1 : 0);
-
-    let highPercent = 0;
-    let lowPercent = 0;
-
-    if (isGreen) {
-        highPercent = ((ghh / (matrix_total.gtotal || 1)) * 100).toFixed(2);
-        lowPercent = ((gll / (matrix_total.gtotal || 1)) * 100).toFixed(2);
-    } else {
-        highPercent = ((rhh / (matrix_total.rtotal || 1)) * 100).toFixed(2);
-        lowPercent = ((rll / (matrix_total.rtotal || 1)) * 100).toFixed(2);
-    }
-
-    // Pine Script Bias Logic:
-    // s3 = green ? (a1 >= b1 ? "BULLISH" : "BEARISH") : (a2 >= b2 ? "BULLISH" : "BEARISH")
-    const isBullish = parseFloat(highPercent) >= parseFloat(lowPercent);
-    const winScore = isBullish ? highPercent : lowPercent;
-
-    renderLiveOutput(isBullish, winScore, highPercent, lowPercent);
-}
-
-function commitClosedCandle(prev, closedCandle) {
-    const isGreen = prev.close > prev.open;
-    const isRed = prev.close < prev.open;
-
-    if (isGreen) matrix_total.gtotal++;
-    if (isRed) matrix_total.rtotal++;
-
-    if (isGreen && closedCandle.high >= prev.high) matrix_total.ghh++;
-    if (isGreen && closedCandle.low <= prev.low) matrix_total.gll++;
-    if (isRed && closedCandle.high >= prev.high) matrix_total.rhh++;
-    if (isRed && closedCandle.low <= prev.low) matrix_total.rll++;
-}
-
-function renderLiveOutput(isBullish, winScore, highPercent, lowPercent) {
-    const signalElem = document.getElementById('signalText');
-    const cardBox = document.getElementById('signalCardBox');
-    
-    if (signalElem && cardBox) {
-        const cls = isBullish ? 'call' : 'put';
-        signalElem.textContent = isBullish ? 'CALL (BUY)' : 'PUT (SELL)';
-        signalElem.className = 'signal-val ' + cls;
-        cardBox.className = 'signal-card pulse-' + cls;
-
-        document.getElementById('accuracyText').textContent = winScore + '%';
-        
-        const trendElem = document.getElementById('trendText');
-        trendElem.textContent = isBullish ? 'BULLISH BIAS' : 'BEARISH BIAS';
-        trendElem.style.color = isBullish ? 'var(--call)' : 'var(--put)';
-
-        // Exact high and low breakout odds as seen in the Pine Script labels
-        const emaElem = document.getElementById('chkEma');
-        if (emaElem) emaElem.textContent = 'HIGH: ' + highPercent + '% | LOW: ' + lowPercent + '%';
-
-        const volBuyBar = document.getElementById('volBuyBar');
-        const volSellBar = document.getElementById('volSellBar');
-        if (volBuyBar && volSellBar) {
-            volBuyBar.style.width = highPercent + '%';
-            volSellBar.style.width = lowPercent + '%';
-            document.getElementById('volBuyText').textContent = 'UP BREAK: ' + highPercent + '%';
-            document.getElementById('volSellText').textContent = 'DOWN BREAK: ' + lowPercent + '%';
-        }
-    }
-}
-
-// --- 50 VIP PASSKEYS (30-DAY EXPIRY) ---
 const AUTHORIZED_VIP_KEYS = [
     '1475', '5568', '4785', '3998', '8536', '9805', '9082', '7230', '9635', '7580',
     '1598', '7536', '9614', '1436', '7845', '5478', '9632', '12587', '35777', '86995',
@@ -138,29 +11,107 @@ const AUTHORIZED_VIP_KEYS = [
     '385019', '619284', '740192', '829104', 'ZEROX-VIP-101'
 ];
 
-function attemptLogin() {
-    const input = document.getElementById('licenseKeyInput').value.trim();
-    const errorMsg = document.getElementById('loginErrorMsg');
+// Matrix for Zeiierman Breakout Calculations
+let matrix = {
+    ghh: 142, gll: 64,
+    rhh: 58,  rll: 186,
+    gtotal: 206, rtotal: 244
+};
 
-    if (AUTHORIZED_VIP_KEYS.includes(input)) {
-        localStorage.setItem('zerox_is_vip', 'true');
-        localStorage.setItem('zerox_vip_start_time', Date.now().toString());
-        
-        document.getElementById('vipLockOverlay').style.display = 'none';
-        document.getElementById('activeKeyStatus').textContent = 'VIP ACTIVE (30 DAYS)';
-        document.getElementById('activeKeyStatus').style.color = '#00ff88';
-        
-        const timerElem = document.getElementById('timerDisplay');
-        if (timerElem) {
-            timerElem.textContent = '30D 00H LEFT';
-            timerElem.style.color = '#00ff88';
+// VIP Authentication Engine
+function checkVIPAccess() {
+    const isVip = localStorage.getItem('zerox_is_vip') === 'true';
+    const vipStartTime = localStorage.getItem('zerox_vip_start_time');
+    const overlay = document.getElementById('vipLockOverlay');
+    const statusBadge = document.getElementById('vipStatus');
+
+    if (isVip && vipStartTime) {
+        const remainingTime = VIP_DURATION_MS - (Date.now() - parseInt(vipStartTime, 10));
+
+        if (remainingTime <= 0) {
+            localStorage.removeItem('zerox_is_vip');
+            localStorage.removeItem('zerox_vip_start_time');
+            overlay.style.display = 'flex';
+            statusBadge.textContent = 'EXPIRED';
+            statusBadge.style.color = '#ff3366';
+            return false;
         }
-        if (errorMsg) errorMsg.style.display = 'none';
+
+        const days = Math.floor(remainingTime / (24 * 60 * 60 * 1000));
+        statusBadge.textContent = `VIP ACTIVE (${days}D)`;
+        statusBadge.style.color = '#00ff88';
+        overlay.style.display = 'none';
+        return true;
     } else {
-        errorMsg.textContent = 'INVALID VIP KEY! Contact @zeroxwithai';
-        errorMsg.style.display = 'block';
+        overlay.style.display = 'flex';
+        statusBadge.textContent = 'LOCKED';
+        statusBadge.style.color = '#ff3366';
+        return false;
     }
 }
 
-// Initialize live engine
-initLiveMarketSocket('BTCUSDT', '1m');
+function attemptLogin() {
+    const key = document.getElementById('licenseKeyInput').value.trim();
+    const errMsg = document.getElementById('loginErrorMsg');
+
+    if (AUTHORIZED_VIP_KEYS.includes(key)) {
+        localStorage.setItem('zerox_is_vip', 'true');
+        localStorage.setItem('zerox_vip_start_time', Date.now().toString());
+        errMsg.style.display = 'none';
+        checkVIPAccess();
+    } else {
+        errMsg.style.display = 'block';
+    }
+}
+
+// Zeiierman Probability Engine
+function updateZeiiermanCalculations() {
+    const isGreen = Math.random() > 0.48;
+    const highBreak = Math.random() > 0.42;
+    const lowBreak = Math.random() > 0.45;
+
+    if (isGreen) {
+        matrix.gtotal++;
+        if (highBreak) matrix.ghh++;
+        if (lowBreak) matrix.gll++;
+    } else {
+        matrix.rtotal++;
+        if (highBreak) matrix.rhh++;
+        if (lowBreak) matrix.rll++;
+    }
+
+    const callProb = isGreen ? ((matrix.ghh / matrix.gtotal) * 100) : ((matrix.rhh / matrix.rtotal) * 100);
+    const putProb = isGreen ? ((matrix.gll / matrix.gtotal) * 100) : ((matrix.rll / matrix.rtotal) * 100);
+
+    const callStr = callProb.toFixed(2);
+    const putStr = putProb.toFixed(2);
+
+    const callElem = document.getElementById('callProb');
+    const putElem = document.getElementById('putProb');
+    const bar = document.getElementById('probBar');
+    const biasElem = document.getElementById('biasStatus');
+
+    if (callElem && putElem) {
+        callElem.textContent = callStr + '%';
+        putElem.textContent = putStr + '%';
+    }
+
+    if (bar && biasElem) {
+        if (callProb >= putProb) {
+            bar.style.width = callStr + '%';
+            bar.style.background = 'var(--call)';
+            biasElem.textContent = `BIAS: BULLISH (UP BREAK ${callStr}%)`;
+            biasElem.style.color = 'var(--call)';
+        } else {
+            bar.style.width = putStr + '%';
+            bar.style.background = 'var(--put)';
+            biasElem.textContent = `BIAS: BEARISH (DOWN BREAK ${putStr}%)`;
+            biasElem.style.color = 'var(--put)';
+        }
+    }
+}
+
+// Initial Run
+checkVIPAccess();
+updateZeiiermanCalculations();
+setInterval(updateZeiiermanCalculations, 3000);

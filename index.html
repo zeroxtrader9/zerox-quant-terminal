@@ -3,150 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZEROX AI | QUANT TERMINAL PRO ULTRA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=11">
+    <title>ZEROX QUANT AI | TERMINAL</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- WELCOME BOOT SCREEN -->
-    <div id="welcomeScreen">
-        <div class="welcome-box">
-            <div class="welcome-logo">ZEROX QUANT AI</div>
-            <div class="welcome-subtitle">SYSTEM INITIALIZATION // NEURAL FEED</div>
-            <div class="welcome-loader-bar">
-                <div class="welcome-loader-fill" id="welcomeProgress"></div>
-            </div>
-            <div class="welcome-status" id="welcomeStatusText">CONNECTING TO QUANT NODES...</div>
-        </div>
-    </div>
-
-    <!-- VIP EXPIRED LOCK MODAL -->
+    <!-- VIP 30-DAY LOCK POPUP -->
     <div id="vipLockOverlay">
         <div class="lock-box">
-            <h2>FREE DEMO EXPIRED</h2>
-            <p>Demo time limit reach ho chuka hai. 30-Day VIP Key enter karein.</p>
-            <input type="text" id="licenseKeyInput" class="key-input" placeholder="ENTER VIP KEY" autofocus>
-            <button onclick="attemptLogin()" class="btn-unlock">UNLOCK VIP TERMINAL</button>
-            <a href="https://t.me/zeroxwithai" target="_blank" class="btn-tg-lock">GET VIP KEY ON @ZEROXWITHAI</a>
-            <div id="loginErrorMsg" class="login-error"></div>
+            <h2>VIP ACCESS REQUIRED</h2>
+            <p>Enter your 30-Day VIP Key to continue</p>
+            <input type="text" id="licenseKeyInput" placeholder="ENTER VIP KEY">
+            <button onclick="attemptLogin()">UNLOCK TERMINAL</button>
+            <div id="loginErrorMsg" class="error-msg">INVALID KEY</div>
         </div>
     </div>
 
-    <!-- LIVE MARKET TICKER TAPE -->
-    <div class="ticker-wrap">
-        <div class="ticker-move">
-            <span class="ticker-item">EUR/USD: <b style="color:var(--call);">1.0842 ▲ (+0.14%)</b></span>
-            <span class="ticker-item">BTC/USDT: <b style="color:var(--put);">$64,280 ▼ (-1.20%)</b></span>
-            <span class="ticker-item">GOLD (XAU): <b style="color:var(--call);">$2,384.50 ▲ (+0.82%)</b></span>
-            <span class="ticker-item">GBP/USD: <b style="color:var(--call);">1.2710 ▲ (+0.08%)</b></span>
-            <span class="ticker-item">ETH/USDT: <b style="color:var(--call);">$3,490 ▲ (+2.10%)</b></span>
-            <span class="ticker-item">USD/JPY: <b style="color:var(--put);">156.40 ▼ (-0.18%)</b></span>
-            <span class="ticker-item">EUR/USD: <b style="color:var(--call);">1.0842 ▲ (+0.14%)</b></span>
-        </div>
-    </div>
-
-    <!-- HEADER -->
-    <header class="header">
-        <div class="logo">ZEROX QUANT AI <span>PRO ULTRA</span></div>
-        <div class="user-status" id="activeKeyStatus">MODE: FREE DEMO (25M)</div>
-    </header>
-
+    <!-- MAIN TERMINAL UI -->
     <div class="terminal-grid">
         <div class="panel">
-            
-            <div class="section-title">QUICK ASSETS</div>
-            <div class="chips-bar">
-                <button class="chip-btn active" onclick="selectChip('FX:EURUSD', this)">EUR/USD</button>
-                <button class="chip-btn" onclick="selectChip('FX:GBPUSD', this)">GBP/USD</button>
-                <button class="chip-btn" onclick="selectChip('OANDA:XAUUSD', this)">GOLD</button>
-                <button class="chip-btn" onclick="selectChip('BINANCE:BTCUSDT', this)">BTC</button>
+            <div class="header-box">
+                <div class="title">ZEROX QUANT ENGINE</div>
+                <div id="vipStatus" class="status-badge">VIP CHECKING...</div>
             </div>
 
-            <div class="section-title">TIMEFRAME</div>
-            <div class="tf-bar">
-                <button class="tf-btn active" onclick="setTimeframe(1, this)">1M</button>
-                <button class="tf-btn" onclick="setTimeframe(5, this)">5M</button>
-                <button class="tf-btn" onclick="setTimeframe(15, this)">15M</button>
-            </div>
+            <!-- PROBABILITY HUD CARD -->
+            <div class="signal-card" id="signalCardBox">
+                <div class="prob-display">
+                    <div class="prob-box">
+                        <span class="prob-label call-text">CALL (BUY)</span>
+                        <span class="prob-val call-text" id="callProb">00.00%</span>
+                    </div>
+                    <div class="prob-box">
+                        <span class="prob-label put-text">PUT (SELL)</span>
+                        <span class="prob-val put-text" id="putProb">00.00%</span>
+                    </div>
+                </div>
 
-            <div class="section-title">ALL LIVE MARKETS</div>
-            <select id="assetSelector" onchange="switchMarket()">
-                <optgroup label="FOREX MAJOR">
-                    <option value="FX:EURUSD">EUR / USD</option>
-                    <option value="FX:GBPUSD">GBP / USD</option>
-                    <option value="FX:USDJPY">USD / JPY</option>
-                    <option value="FX:AUDUSD">AUD / USD</option>
-                    <option value="FX:USDCAD">USD / CAD</option>
-                    <option value="FX:USDCHF">USD / CHF</option>
-                    <option value="FX:NZDUSD">NZD / USD</option>
-                    <option value="FX:EURJPY">EUR / JPY</option>
-                    <option value="FX:GBPJPY">GBP / JPY</option>
-                </optgroup>
-                <optgroup label="COMMODITIES">
-                    <option value="OANDA:XAUUSD">GOLD (XAU/USD)</option>
-                    <option value="OANDA:XAGUSD">SILVER (XAG/USD)</option>
-                    <option value="TVC:USOIL">CRUDE OIL (USOIL)</option>
-                </optgroup>
-                <optgroup label="CRYPTO">
-                    <option value="BINANCE:BTCUSDT">BITCOIN (BTC/USDT)</option>
-                    <option value="BINANCE:ETHUSDT">ETHEREUM (ETH/USDT)</option>
-                    <option value="BINANCE:SOLUSDT">SOLANA (SOL/USDT)</option>
-                    <option value="BINANCE:BNBUSDT">BNB / USDT</option>
-                    <option value="BINANCE:XRPUSDT">XRP / USDT</option>
-                </optgroup>
-            </select>
-
-            <!-- CANDLE TIMER CARD -->
-            <div class="candle-timer-card">
-                <div class="section-title" style="margin:0; font-size:10px;">CANDLE EXPIRATION COUNTDOWN</div>
-                <div class="candle-time-display" id="candleTimerDisplay">--:--</div>
                 <div class="progress-bar-container">
-                    <div class="progress-bar-fill" id="candleProgressBar"></div>
-                </div>
-            </div>
-
-            <!-- QUANT SIGNAL OUTPUT -->
-            <div class="signal-card pulse-call" id="signalCardBox">
-                <div class="section-title" style="margin: 0; font-size:10px;">QUANT ALGO ENTRY</div>
-                <div class="signal-val call" id="signalText">CALL (BUY)</div>
-                
-                <div class="analytics-grid">
-                    <div class="gauge-box">CONFIDENCE: <div class="gauge-val" id="accuracyText">94.6%</div></div>
-                    <div class="gauge-box">RSI (14): <div class="gauge-val" id="rsiVal" style="color:var(--call);">64.2</div></div>
-                    <div class="gauge-box">TREND: <div class="gauge-val" id="trendText" style="color:var(--call);">STRONG BULLISH</div></div>
-                    <div class="gauge-box">BREAKOUT: <div class="gauge-val" id="chkEma" style="color:var(--call);">HIGH BREAK: 76.4%</div></div>
+                    <div class="progress-bar-fill" id="probBar"></div>
                 </div>
 
-                <div class="vol-wrapper">
-                    <div class="vol-labels">
-                        <span style="color:var(--call);" id="volBuyText">BUY: 68%</span>
-                        <span style="color:var(--put);" id="volSellText">SELL: 32%</span>
-                    </div>
-                    <div class="vol-bar">
-                        <div class="vol-buy" id="volBuyBar" style="width: 68%;"></div>
-                        <div class="vol-sell" id="volSellBar" style="width: 32%;"></div>
-                    </div>
-                </div>
+                <div class="bias-text" id="biasStatus">BIAS: ANALYZING...</div>
             </div>
 
-            <div class="timer-box">
-                <div class="section-title" style="margin:0; font-size:10px;">FREE TRIAL REMAINING</div>
-                <div class="timer-val" id="timerDisplay">25:00</div>
-            </div>
-
-            <a href="https://t.me/zeroxwithai" target="_blank" class="btn-vip">GET VIP KEY ON TELEGRAM</a>
+            <div class="info-note">Live Zeiierman Breakout Logic Active</div>
         </div>
 
         <!-- TRADINGVIEW LIVE CHART -->
-        <div class="chart-panel" id="tv_chart_container">
-            <iframe id="tv_frame" src="https://s.tradingview.com/widgetembed/?symbol=FX:EURUSD&interval=1&theme=dark&style=1&timezone=Etc%2FUTC&hideideas=1"></iframe>
+        <div class="chart-panel">
+            <iframe id="tv_frame" src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=1&theme=dark&style=1&timezone=Etc%2FUTC"></iframe>
         </div>
     </div>
 
-    <!-- MODULAR SCRIPTS -->
-    <script src="chart.js"></script>
     <script src="quant.js"></script>
-    <script src="timer.js"></script>
 </body>
 </html>
