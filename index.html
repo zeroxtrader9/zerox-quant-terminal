@@ -15,13 +15,13 @@
             <h2>FREE TRIAL EXPIRED</h2>
             <p>Your 25-minute demo has ended. Enter VIP Key to unlock 30-day access.</p>
             <input type="text" id="licenseKeyInput" placeholder="ENTER VIP KEY">
-            <button onclick="attemptLogin()" class="btn-unlock">ACTIVATE 30-DAY VIP</button>
+            <button id="btnUnlock" class="btn-unlock">ACTIVATE 30-DAY VIP</button>
             <a href="https://t.me/zeroxwithai" target="_blank" class="btn-tg">GET VIP KEY ON TELEGRAM</a>
             <div id="loginErrorMsg" class="error-msg">INVALID VIP KEY!</div>
         </div>
     </div>
 
-    <!-- HEADER -->
+    <!-- TOP HEADER -->
     <div class="header">
         <div class="logo">ZEROX <span>QUANT PRO</span></div>
         <div class="header-right">
@@ -29,14 +29,14 @@
         </div>
     </div>
 
-    <!-- MAIN TERMINAL -->
+    <!-- MAIN TERMINAL GRID -->
     <div class="terminal-grid">
         
-        <!-- LEFT CONTROLS -->
+        <!-- LEFT CONTROL & SIGNAL PANEL -->
         <div class="panel">
             
             <div class="section-title">ALL CURRENCY PAIRS & ASSETS</div>
-            <select id="assetSelector" onchange="switchMarketDropdown()">
+            <select id="assetSelector">
                 <optgroup label="🔥 CRYPTO">
                     <option value="BINANCE:BTCUSDT" selected>BITCOIN (BTC/USDT)</option>
                     <option value="BINANCE:ETHUSDT">ETHEREUM (ETH/USDT)</option>
@@ -65,17 +65,17 @@
 
             <div class="section-title">QUICK ASSETS</div>
             <div class="chips-bar">
-                <button class="chip-btn active" onclick="selectChip('BINANCE:BTCUSDT', this)">BTC</button>
-                <button class="chip-btn" onclick="selectChip('FX:EURUSD', this)">EUR/USD</button>
-                <button class="chip-btn" onclick="selectChip('FX:GBPUSD', this)">GBP/USD</button>
-                <button class="chip-btn" onclick="selectChip('OANDA:XAUUSD', this)">GOLD</button>
+                <button class="chip-btn active" data-sym="BINANCE:BTCUSDT">BTC</button>
+                <button class="chip-btn" data-sym="FX:EURUSD">EUR/USD</button>
+                <button class="chip-btn" data-sym="FX:GBPUSD">GBP/USD</button>
+                <button class="chip-btn" data-sym="OANDA:XAUUSD">GOLD</button>
             </div>
 
             <div class="section-title">TIMEFRAME</div>
             <div class="tf-bar">
-                <button class="tf-btn active" onclick="setTF(1, this)">1M</button>
-                <button class="tf-btn" onclick="setTF(5, this)">5M</button>
-                <button class="tf-btn" onclick="setTF(15, this)">15M</button>
+                <button class="tf-btn active" data-tf="1">1M</button>
+                <button class="tf-btn" data-tf="5">5M</button>
+                <button class="tf-btn" data-tf="15">15M</button>
             </div>
 
             <!-- CANDLE EXPIRY TIMER -->
@@ -84,7 +84,7 @@
                 <div id="candleTimer" class="timer-val">00:45</div>
             </div>
 
-            <!-- ZEIIERMAN BREAKOUT SIGNAL -->
+            <!-- MAIN SIGNAL CARD -->
             <div class="signal-card pulse-call" id="signalCardBox">
                 <div class="sub-label">ZEIIERMAN PROBABILITY VERDICT</div>
                 <div id="mainSignalText" class="signal-val call">CALL (BUY)</div>
@@ -101,7 +101,7 @@
             </div>
 
             <a href="https://t.me/zeroxwithai" target="_blank" class="btn-vip-support">⚡ UPGRADE TO LIFETIME VIP</a>
-            <div class="footer-note">● Exact Zeiierman Breakout Matrix Active</div>
+            <div class="footer-note">● Zeiierman Probability Breakout Engine</div>
         </div>
 
         <!-- RIGHT CHART -->
